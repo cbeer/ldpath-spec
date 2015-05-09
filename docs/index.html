@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>LDPath</title>
+        <meta charset='utf-8'></meta>
+        <script src='http://www.w3.org/Tools/respec/respec-w3c-common' async='true' class='remove'></script> 
+        <script class='remove'>
+        
+      var respecConfig = {
+          specStatus: "ED", 
+          shortName:  "ldpath",
+          editors: [
+                {   name:       "Chris Beer",
+                    url:        "http://www.stanford.edu/~cabeer/",
+                    company:    "Stanford University",
+                    companyURL: "http://www.stanford.edu/",
+                    mailto:     "cabeer@stanford.edu"  }
+          ],
+          previousMaturity:     "",
+          previousPublishDate:  "",
+          previousURI:          "http://marmotta.apache.org/ldpath/",
+          publishDate:          "2015-05-09", 
+          edDraftURI:           "https://cbeer.github.io/ldpath-spec/docs/",
+          localBiblio: {
+            "EBNF-NOTATION" : {
+              "authors" : [
+                "Tim Bray",
+                "Jean Paoli",
+                "C. Michael Sperberg-McQueen",
+                "Eve Maler",
+                "François Yergau"
+              ],
+              "title" : "EBNF Notation",
+              "rawDate" : "2008-11-26",
+              "status" : "REC",
+              "publisher" : "W3C",
+              "href" : "http://www.w3.org/TR/xml/#sec-notation"
+            }
+          },
+          wg:                   "RDF Working Group",
+          wgURI:                "",
+          wgPublicList:         "",
+          wgPatentURI:          "",
+          otherLinks: [
+                {
+                        key: "Repository",
+                        data: [{
+                                value: "Github Repository",
+                                href: "https://github.com/cbeer/ldpath-spec"
+                        }]
+                }
+          ]
+      };  
+        </script> 
+</head>
+
+<body>
+
+
+<section id="abstract">
+<p>LDPath is a simple path-based query language, similar to XPath or SPARQL Property Paths, that is particularly well-suited for querying and retrieving resources from the Linked Data Cloud by following RDF links between resources and servers.</p>
+</section>
+
+
+<section id="sotd"> 
+</section>
+
+<section class="informative">
+  <h2>Introduction</h2>
+  <p>
+    Linked Data "describes a method of publishing structured data so that it can be interlinked and become more useful. It builds upon standard Web technologies such as HTTP, RDF and IRIs, but rather than using them to serve web pages for human readers, it extends them to share information in a way that can be read automatically by computers. This enables data from different sources to be connected and queried." (source Wikipedia).
+  </p>
+  <p>
+    This document defines the Linked Data Path (LDPath) query language, a format for describing transformations from linked data to resources.
+  </p>
+  <p>
+    An instance of the LDPath language (or LDPath document) defines a list of operations to be performed against a Linked Data resource.
+  </p>
+</section>
+
+<section id="conformance">
+  <h2>Conformance</h2>
+  <p>This specification defines conformance criteria for:</p>
+      <ul>
+        <li>LDPath documents</li>
+        <li>LDPath parsers</li>
+        <li>LDPath processors</li>
+        <li>LDPath servers</li>
+      </ul>
+
+      <p>A conforming <strong>LDPath document</strong> is a Unicode string that conforms to the grammar defined in the <a href="#concrete-syntax">Concrete Syntax section</a>.</p>
+
+      <p>A conforming <strong>LDPath parser</strong> is a system capable of parsing LDPath documents. The resulting abstract concept is called a <strong>LDPath thingy</strong>.</p>
+
+      <p>A conforming <strong>LDPath processor</strong> is a system capable of executing a LDPath document against an <a class="externalDFN" href="http://www.w3.org/TR/rdf11-concepts/#section-rdf-graph">RDF Graph</a> and whose semantics follow the ones defined in the <a href="#semantics">LDPath Semantics section</a>.</p>
+
+      <p>A conforming <strong>LDPath server</strong> is a system capable of processing an LDPath document through an HTTP POST request. It MUST handle errors as defined in the <a href="#error-handling">Error Handling section</a>.</p>
+</section>
+
+<section class="informative">
+  <h2>LDPath Language</h2>
+    
+  <h3>Selectors</h3>
+
+  <h4>Compound Selectors</h4>
+  <p>
+
+  </p>
+  <h5>Examples</h5>
+  <p></p>
+
+</section>
+
+
+<section>
+  <h2>Media Type</h2>
+  <p>The media type of LDPath is <code>application/ldpath</code>.  The content encoding of LDPath documents MUST be UTF-8.</p>
+
+</section>
+
+
+<section>
+  <h2>Grammar</h2>
+
+  <p>
+  A LDPath document is a Unicode [[UNICODE]] character string encoded in UTF-8. Unicode characters only in the range U+0000 to U+10FFFF inclusive are allowed.
+  </p>
+
+  <h3>Whitespace</h3>
+<p>
+  White space is used to separate two terminals which would otherwise be (mis-)recognized as one 
+  terminal.
+</p>
+
+  <h3>Comments</h3>
+<p>
+  Comments in LDPath documents take the form of '#', outside an IRI or string, and continue to the end of line (marked by characters 0x0D or 0x0A) or end of file if there is no end of line after the comment marker. Comments are treated as white space.</p>
+
+
+  <h3>IRI References</h3>
+<p>
+  Relative IRIs are resolved with base IRIs as per Uniform Resource Identifier (URI): Generic Syntax [[RFC3986]] using only the basic algorithm in section 5.2.
+  					  Neither Syntax-Based Normalization nor Scheme-Based Normalization (described in sections 6.2.2 and 6.2.3 of [[!RFC3986]]) are performed.
+  					  Characters additionally allowed in IRI references are treated in the same way that unreserved characters are treated in URI references, per section 6.5 of Internationalized Resource Identifiers (IRIs) [[RFC3987]].
+</p>
+
+<p>
+  The <abbr title="Extended Backus–Naur Form">EBNF</abbr> used here is defined in XML 1.0 [[EBNF-NOTATION]]. Production labels consisting of a number and a final 's', e.g. [60s], reference the production with that number in the SPARQL 1.1 Query Language grammar [[SPARQL11-QUERY]]. Production labels consisting of a number and a final 't', e.g. [6t], reference the production with that number in the Turtle grammar [[Turtle]].
+</p>
+
+  <pre>
+[  1   ] ldpathDoc   ::= prologue? statements?
+[  2   ] prologue    ::= directive (EOL directive)* EOL?
+[  3   ] statements  ::= statement (EOL statement)* EOL?
+[  4   ] directive   ::= prefixID | graph | filter | boost
+[  5   ] prefixID    ::= '@prefix' PNAME_NS IRIREF ';'
+[  6   ] graph       ::= '@graph' iri (',' iri)* ';'
+[  7   ] filter      ::= '@filter' test ';'
+[  8   ] boost       ::= '@boost' path ';'
+[  9   ] statement   ::= mapping
+[  10  ] mapping     ::= label '=' selector field_type? ';'
+[  11  ] label       ::= PN_PREFIX
+[  12  ] selector    ::= path_selector | compound_selector | testing_selector | atomic_selector
+[  13  ] field_type  ::= '::' iri field_type_options?
+[  13t ] literal     ::= RDFLiteral | NumericLiteral | BooleanLiteral
+[  14  ] field_type_options ::= '(' field_type_option (',' field_type_option )* ')'
+[  15  ] field_type_option  ::= label '=' String
+[  16  ] path_selector      ::= atomic_or_testing_selector "/" atomic_testing_or_path_selector
+[  17  ] compound_operator  ::= '&amp;' | '|'
+[  18  ] compound_selector  ::= atomic_testing_or_path_selector compound_operator selector
+[  19  ] atomic_or_testing_selector      ::= atomic_selector | testing_selector
+[  20  ] atomic_testing_or_path_selector ::= atomic_selector | testing_selector | path_selector
+[  21  ] testing_selector   ::= atomic_selector "[" node_test "]"
+[  22  ] node_test          ::= grouped_test | not_test | and_test | or_test | atomic_node_test
+[  23  ] atomic_node_test  ::= literal_language_test | literal_type_test | is_a_test | path_equality_test | function_test | path_test
+[  24  ] grouped_test   ::= '(' node_test ')'
+[  25  ] not_test       ::= '!' node_test
+[  26  ] and_test       ::= atomic_node_test '&amp;' node_test
+[  27  ] or_test        ::= atomic_node_test '|' node_test
+[  28  ] literal_language_test   ::= LANGTAG
+[  29  ] literal_type_test   ::= '^^' iri
+[  30  ] is_a_test           ::= 'is-a' iri
+[  31  ] path_equality_test  ::= selector 'is' (iri | literal)
+[  32  ] function_test       ::=  function_without_args | function_with_arglist
+[  33  ] path_test           ::= path_selector | testing_selector | atomic_selector
+[  34  ] atomic_selector     ::= self_selector | function_selector | property_selector | wildcard_selector | reverse_property_selector | literal_selector | recursive_path_selector | grouped_selector
+[  35  ] self_selector       ::= '.'
+[  36  ] function_selector   ::= 'fn:' label '(' ArgList ')'
+[  37  ] ArgList             ::= NIL | selector (',' selector)*
+[  38  ] property_selector   ::= iri
+[  39  ] wildcard_selector   ::= '*'
+[  40  ] reverse_property_selector ::= '^' iri
+[  41  ] literal_selector          ::= literal
+[  42  ] recursive_path_selector   ::= '(' selector ')' range
+[  43  ] range        ::= zero_or_one | zero_or_more | one_or_more | min_to_max
+[  44  ] zero_or_one  ::= '?'
+[  45  ] zero_or_more ::= '*'
+[  46  ] one_or_more  ::= '+'
+[  47  ] min_to_max   ::= '{' INTEGER? ',' INTEGER? '}'
+[  48  ] grouped_selector   ::= '(' selector ')'
+[  129s] RDFLiteral	        ::=  	String ( LANGTAG | ( '^^' iri ) )?
+[  130s] NumericLiteral	    ::=  	NumericLiteralUnsigned | NumericLiteralPositive | NumericLiteralNegative
+[  131s] NumericLiteralUnsigned	  ::=  	INTEGER |	DECIMAL |	DOUBLE
+[  132s] NumericLiteralPositive	  ::=  	INTEGER_POSITIVE |	DECIMAL_POSITIVE |	DOUBLE_POSITIVE
+[  133s] NumericLiteralNegative	  ::=  	INTEGER_NEGATIVE |	DECIMAL_NEGATIVE |	DOUBLE_NEGATIVE
+[  134s] BooleanLiteral	  ::=  	'true' |	'false'
+[  135s] String	          ::=	STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE
+[  136s] iri	            ::=	IRIREF | PrefixedName
+[  137s] PrefixedName	    ::=	PNAME_LN | PNAME_NS
+  </pre>
+
+<h3>Productions for Terminals</h3>
+
+<pre>
+[  50  ] EOL ::= [#xD#xA]+
+[  18t ] IRIREF  ::= '&lt;' ([^#x00-#x20&lt;&gt;"{}|^`\] | UCHAR)* '>'
+[  26t ] UCHAR ::= '\u' HEX HEX HEX HEX | '\U' HEX HEX HEX HEX HEX HEX HEX HEX
+[  22t ] STRING_LITERAL_QUOTE	::=	'"' ([^#x22#x5C#xA#xD] | ECHAR | UCHAR)* '"' /* #x22=" #x5C=\ #xA=new line #xD=carriage return */
+[  23t ] STRING_LITERAL_SINGLE_QUOTE	::=	"'" ([^#x27#x5C#xA#xD] | ECHAR | UCHAR)* "'" /* #x27=' #x5C=\ #xA=new line #xD=carriage return */
+[  24t ] STRING_LITERAL_LONG_SINGLE_QUOTE	::=	"'''" (("'" | "''")? ([^'\] | ECHAR | UCHAR))* "'''"
+[  25t ] STRING_LITERAL_LONG_QUOTE	::=	'"""' (('"' | '""')? ([^"\] | ECHAR | UCHAR))* '"""'[141s] BLANK_NODE_LABEL  ::= '_:' (PN_CHARS_U | [0-9]) ((PN_CHARS | '.')* PN_CHARS)?
+[  140s] PNAME_NS	::=	PN_PREFIX? ':'
+[  141s] PNAME_LN	::=	PNAME_NS PN_LOCAL
+[  145s] LANGTAG ::= '@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*
+[  146s] INTEGER	  ::=  	[0-9]+
+[  147s] DECIMAL	  ::=  	[0-9]* '.' [0-9]+
+[  148s] DOUBLE	  ::=  	[0-9]+ '.' [0-9]* EXPONENT | '.' ([0-9])+ EXPONENT | ([0-9])+ EXPONENT
+[  149s] INTEGER_POSITIVE	  ::=  	'+' INTEGER
+[  150s] DECIMAL_POSITIVE	  ::=  	'+' DECIMAL
+[  151s] DOUBLE_POSITIVE	  ::=  	'+' DOUBLE
+[  152s] INTEGER_NEGATIVE	  ::=  	'-' INTEGER
+[  153s] DECIMAL_NEGATIVE	  ::=  	'-' DECIMAL
+[  154s] DOUBLE_NEGATIVE	  ::=  	'-' DOUBLE
+[  155s] EXPONENT	  ::=  	[eE] [+-]? [0-9]+
+[  160s] ECHAR ::= '\' [tbnrf"'\]
+[  161s] NIL	  ::=  	'(' WS* ')'
+[  164s] PN_CHARS_BASE	  ::=  	[A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+[  165s] PN_CHARS_U	  ::=  	PN_CHARS_BASE | '_'
+[  167s] PN_CHARS	  ::=  	PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+[  168s] PN_PREFIX	  ::=  	PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
+[  169s] PN_LOCAL	  ::=  	(PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
+[  170s] PLX	  ::=  	PERCENT | PN_LOCAL_ESC
+[  171s] PERCENT	  ::=  	'%' HEX HEX
+[  172s] HEX	  ::=  	[0-9] | [A-F] | [a-f]
+[  173s] PN_LOCAL_ESC	  ::=  	'\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
+</pre>  
+
+</section>
+
+</body>
+</html>
